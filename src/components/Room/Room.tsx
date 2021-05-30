@@ -54,8 +54,22 @@ function RoomComponent(props: RoomProps) {
   if (room) {
     return (
       <React.Fragment>
-        <Title text={room.roomTitle} />
-        <Row>
+        <Row className="p-3">
+          <Col>
+            <Row className="pl-3">
+              {/* <Title text={room.roomTitle} /> */}
+              <h3>{room.roomTitle}</h3>
+            </Row>
+          </Col>
+          <Col xs lg={2}>
+            <Row className="pr-4 justify-content-end">
+              <Button variant="info" onClick={handleLeaveRoom}>
+                Back To Lobby
+              </Button>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="pl-3">
           <Col>
             <Game />
           </Col>
@@ -63,9 +77,6 @@ function RoomComponent(props: RoomProps) {
             <Chat />
           </Col>
         </Row>
-        <Button variant="info" onClick={handleLeaveRoom}>
-          Back To Lobby
-        </Button>
       </React.Fragment>
     );
   }
