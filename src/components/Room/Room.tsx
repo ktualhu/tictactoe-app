@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import Title from '../../components/UI/Title/Title';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
 import RootState from '../../store/state/rootState';
