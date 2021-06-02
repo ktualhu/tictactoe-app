@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Col,
@@ -8,18 +8,46 @@ import {
   Row,
   Form,
 } from 'react-bootstrap';
+import { Message, MessageType } from '../../utils/types/chat-message';
+import { v4 as uuidv4 } from 'uuid';
 
 function Chat() {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([] as string[]);
+  const [message, setMessage] = useState({
+    text: '',
+    type: MessageType.PLAIN,
+  } as Message);
+  const [messages, setMessages] = useState([] as Message[]);
 
-  const handleMessageSend = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!message) return;
+  useEffect(() => {
+    handleAlertMessage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleMessageSend = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
+    if (!message.text) return;
+    // await get request in then
+    createNewMessage();
+  };
+
+  // test
+  const handleAlertMessage = () => {
+    createNewMessage('some username', MessageType.ALERT);
+  };
+
+  const createNewMessage = (
+    text: string = '',
+    type: MessageType = MessageType.PLAIN
+  ) => {
+    const msg: Message = {
+      id: uuidv4(),
+      text: text || message.text,
+      type: type || MessageType.PLAIN,
+    };
     const newMessages = messages.slice();
-    newMessages.push(message);
+    newMessages.push(msg);
     setMessages(newMessages);
-    setMessage('');
+    setMessage({ text: '', type: MessageType.PLAIN });
   };
 
   return (
@@ -37,11 +65,15 @@ function Chat() {
           messages.map(message => {
             return (
               <Row
-                key={message} // bad bad bad
-                className="m-1 mb-2 d-flex justify-content-end"
+                key={message.id!}
+                className={
+                  message.type === MessageType.PLAIN
+                    ? 'm-1 mb-2 d-flex justify-content-end'
+                    : 'm-1 mb-2 d-flex justify-content-center'
+                }
               >
                 <span className="p-2 rounded shadow-sm p-3 bg-white rounded">
-                  {message}
+                  {message.text}
                 </span>
               </Row>
             );
@@ -57,8 +89,13 @@ function Chat() {
           <FormControl
             placeholder="Your message"
             aria-label="Your message"
-            value={message}
-            onChange={event => setMessage(event.target.value)}
+            value={message.text}
+            onChange={event =>
+              setMessage({
+                text: event.target.value,
+                type: MessageType.PLAIN,
+              } as Message)
+            }
           />
           <Button type="submit" variant="info" id="button-addon2">
             Send

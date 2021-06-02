@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Row, Col, Container, Table, Button } from 'react-bootstrap';
 import { useGameLogic } from './GameLogic';
-import './Game.css';
+import styles from './Game.module.css';
 
 function Game() {
+  const [disable, setDisable] = useState(false);
   const gameLogic = useGameLogic();
 
   useEffect(() => {
@@ -22,10 +23,11 @@ function Game() {
   };
 
   const paintWinner = (winCells: number[]) => {
+    setDisable(true);
     winCells.forEach(cellNum => {
       document
         .querySelectorAll('.cell')
-        [cellNum].firstElementChild?.classList.add('winner');
+        [cellNum].firstElementChild?.classList.add(styles.winner);
     });
   };
 
@@ -47,41 +49,86 @@ function Game() {
         </Col>
       </Row>
       <Table
-        className="table table-borderless table-sm"
+        className={`${styles.table} table-borderless table-sm`}
         onClick={handleCellClick}
       >
         <tbody>
           <tr>
-            <td>
-              <Button variant="light" className="cell" id="00"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="00"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="01"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="01"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="02"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="02"
+              ></Button>
             </td>
           </tr>
           <tr>
-            <td>
-              <Button variant="light" className="cell" id="10"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="10"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="11"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="11"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="12"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="12"
+              ></Button>
             </td>
           </tr>
           <tr>
-            <td>
-              <Button variant="light" className="cell" id="20"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="20"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="21"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="21"
+              ></Button>
             </td>
-            <td>
-              <Button variant="light" className="cell" id="22"></Button>
+            <td className={styles.td}>
+              <Button
+                disabled={disable}
+                variant="light"
+                className={`${styles.cell} cell`}
+                id="22"
+              ></Button>
             </td>
           </tr>
         </tbody>

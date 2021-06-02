@@ -100,9 +100,9 @@ export const useGameLogic = () => {
       }
       for (let j = 2; j >= 0; j--) {
         if (cells[fieldArr[i][j] - 1].textContent === figure) {
+          diagWinStrickFigures.push(fieldArr[i][j] - 1);
           i++;
           diagStrick++;
-          diagWinStrickFigures.push(fieldArr[i][i] - 1);
         } else {
           diagStrick = 0;
           diagWinStrickFigures = [];
