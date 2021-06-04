@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import Title from '../../components/UI/Title/Title';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
 import RootState from '../../store/state/rootState';
@@ -33,6 +32,8 @@ function RoomComponent(props: RoomProps) {
   );
 
   useEffect(() => {
+    console.log('here', currentUser);
+
     http
       .get(`/rooms/${roomId}`)
       .then(() => {
@@ -54,18 +55,29 @@ function RoomComponent(props: RoomProps) {
   if (room) {
     return (
       <React.Fragment>
-        <Title text={room.roomTitle} />
-        <Row>
+        <Row className="p-3">
+          <Col>
+            <Row className="pl-3">
+              {/* <Title text={room.roomTitle} /> */}
+              <h3>{room.roomTitle}</h3>
+            </Row>
+          </Col>
+          <Col xs lg={2}>
+            <Row className="pr-4 justify-content-end">
+              <Button variant="info" onClick={handleLeaveRoom}>
+                Back To Lobby
+              </Button>
+            </Row>
+          </Col>
+        </Row>
+        <Row className="pl-3">
           <Col>
             <Game />
           </Col>
           <Col>
-            <Chat />
+            <Chat roomId={roomId!} />
           </Col>
         </Row>
-        <Button variant="info" onClick={handleLeaveRoom}>
-          Back To Lobby
-        </Button>
       </React.Fragment>
     );
   }

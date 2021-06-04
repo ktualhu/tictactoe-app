@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
+import { useChat } from './useChat';
+// import { useChat } from './useChat';
 import { useLobby } from './useLobby';
 
 export const useRooms = () => {
   const roomSocketRef = useRef({} as Socket);
   const { addUser, removeUser } = useLobby();
+  const { showChatLeaveAlert } = useChat();
 
   useEffect(() => {
     roomSocketRef.current = io('http://localhost:5001/room', {
@@ -40,11 +43,14 @@ export const useRooms = () => {
       roomSocketRef.current.emit('room:join', { roomId, username });
       // update room for outer users
       addUser(roomId, username);
+      // update chat
+      // showChatJoinAlert(username, roomId);
     }
   };
 
   const leaveRoom = (roomId: string, username: string) => {
     removeUser(roomId, username);
+    showChatLeaveAlert(roomId, username);
     roomSocketRef.current.emit('room:leave', { roomId, username });
   };
 
