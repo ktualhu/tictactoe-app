@@ -9,45 +9,41 @@ import {
   Form,
 } from 'react-bootstrap';
 import { Message, MessageType } from '../../utils/types/chat-message';
-import { v4 as uuidv4 } from 'uuid';
 
-function Chat() {
+import { useChat } from '../../hooks/useChat';
+import { useSelector } from 'react-redux';
+import { currentUserSelector } from '../../store/users/usersSlice';
+import { getAllMessages } from '../../store/chat/chatSlice';
+import { constructChatMessage } from '../../utils/helpers/constructChatMessage';
+
+type ChatProps = {
+  roomId: string;
+};
+
+function Chat(props: ChatProps) {
   const [message, setMessage] = useState({
     text: '',
-    type: MessageType.PLAIN,
+    type: MessageType.MESSAGE,
   } as Message);
-  const [messages, setMessages] = useState([] as Message[]);
+  const currentUser = useSelector(currentUserSelector);
+  const messages = useSelector(getAllMessages);
+  const { showChatJoinAlert, sendMessage } = useChat();
 
   useEffect(() => {
-    handleAlertMessage();
+    showChatJoinAlert(props.roomId, createNewMessage(MessageType.JOIN));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMessageSend = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     if (!message.text) return;
-    // await get request in then
-    createNewMessage();
+    sendMessage(props.roomId, createNewMessage());
   };
 
-  // test
-  const handleAlertMessage = () => {
-    createNewMessage('some username', MessageType.ALERT);
-  };
-
-  const createNewMessage = (
-    text: string = '',
-    type: MessageType = MessageType.PLAIN
-  ) => {
-    const msg: Message = {
-      id: uuidv4(),
-      text: text || message.text,
-      type: type || MessageType.PLAIN,
-    };
-    const newMessages = messages.slice();
-    newMessages.push(msg);
-    setMessages(newMessages);
-    setMessage({ text: '', type: MessageType.PLAIN });
+  const createNewMessage = (type: MessageType = MessageType.MESSAGE) => {
+    const msg = constructChatMessage(currentUser.username, type, message.text);
+    setMessage({ text: '', type: MessageType.MESSAGE, author: '' });
+    return msg;
   };
 
   return (
@@ -62,13 +58,15 @@ function Chat() {
         style={{ height: '400px' }}
       >
         {messages.length ? (
-          messages.map(message => {
+          messages.map((message: Message) => {
             return (
               <Row
                 key={message.id!}
                 className={
-                  message.type === MessageType.PLAIN
-                    ? 'm-1 mb-2 d-flex justify-content-end'
+                  message.type === MessageType.MESSAGE
+                    ? message.author === currentUser.username
+                      ? 'm-1 mb-2 d-flex justify-content-end'
+                      : 'm-1 mb-2 d-flex justify-content-start'
                     : 'm-1 mb-2 d-flex justify-content-center'
                 }
               >
@@ -93,7 +91,7 @@ function Chat() {
             onChange={event =>
               setMessage({
                 text: event.target.value,
-                type: MessageType.PLAIN,
+                type: MessageType.MESSAGE,
               } as Message)
             }
           />

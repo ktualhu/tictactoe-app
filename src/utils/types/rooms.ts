@@ -1,5 +1,4 @@
-// import { User } from './users';
-
+import { Message } from './chat-message';
 import { User } from './users';
 
 export interface Room {
@@ -7,5 +6,6 @@ export interface Room {
   roomTitle: string;
   roomPrivate: boolean;
   roomUsers: User[];
+  roomMessages: Message[];
   roomPassword?: string;
 }

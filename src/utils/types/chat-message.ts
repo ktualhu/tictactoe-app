@@ -1,10 +1,12 @@
 export enum MessageType {
-  PLAIN = 'plain',
-  ALERT = 'alert',
+  MESSAGE = 'message',
+  JOIN = 'join',
+  LEAVE = 'leave',
 }
 
 export type Message = {
   id?: string;
   text: string;
   type: MessageType;
+  author: string;
 };

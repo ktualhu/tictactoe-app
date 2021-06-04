@@ -32,6 +32,8 @@ function RoomComponent(props: RoomProps) {
   );
 
   useEffect(() => {
+    console.log('here', currentUser);
+
     http
       .get(`/rooms/${roomId}`)
       .then(() => {
@@ -73,7 +75,7 @@ function RoomComponent(props: RoomProps) {
             <Game />
           </Col>
           <Col>
-            <Chat />
+            <Chat roomId={roomId!} />
           </Col>
         </Row>
       </React.Fragment>
