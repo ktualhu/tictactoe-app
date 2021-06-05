@@ -70,7 +70,7 @@ function RoomComponent(props: RoomProps) {
             </Row>
           </Col>
         </Row>
-        <Row className="pl-3">
+        <Row className="pl-3 pr-4 pb-4">
           <Col>
             <Game />
           </Col>

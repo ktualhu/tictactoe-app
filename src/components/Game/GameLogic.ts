@@ -8,7 +8,7 @@ export const useGameLogic = () => {
   ];
   const [cells, setCells] = useState({} as NodeListOf<Element>);
   const [field, setField] = useState([] as string[]);
-  const [figure, setFigure] = useState('X');
+  const [figure, setFigure] = useState('');
   let winStrickFigures: number[] = [];
 
   const init = (paramCells: NodeListOf<Element>, fig: string = 'X') => {

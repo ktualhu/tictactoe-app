@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
-  Col,
   Container,
   FormControl,
   InputGroup,
@@ -48,12 +47,7 @@ function Chat(props: ChatProps) {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col>
-          <h1>Chat</h1>
-        </Col>
-      </Row>
+    <React.Fragment>
       <Container
         className="p-1 bg-light text-dark overflow-auto"
         style={{ height: '400px' }}
@@ -93,7 +87,7 @@ function Chat(props: ChatProps) {
           </Button>
         </InputGroup>
       </Form>
-    </Container>
+    </React.Fragment>
   );
 }
 
