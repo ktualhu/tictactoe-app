@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { currentUserSelector } from '../../store/users/usersSlice';
 import { getAllMessages } from '../../store/chat/chatSlice';
 import { constructChatMessage } from '../../utils/helpers/constructChatMessage';
+import MessageComponent from './Message';
 
 type ChatProps = {
   roomId: string;
@@ -62,17 +63,9 @@ function Chat(props: ChatProps) {
             return (
               <Row
                 key={message.id!}
-                className={
-                  message.type === MessageType.MESSAGE
-                    ? message.author === currentUser.username
-                      ? 'm-1 mb-2 d-flex justify-content-end'
-                      : 'm-1 mb-2 d-flex justify-content-start'
-                    : 'm-1 mb-2 d-flex justify-content-center'
-                }
+                className="m-1 mb-2 d-flex justify-content-start"
               >
-                <span className="p-2 rounded shadow-sm p-3 bg-white rounded">
-                  {message.text}
-                </span>
+                <MessageComponent message={message} />
               </Row>
             );
           })
