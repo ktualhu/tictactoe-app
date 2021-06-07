@@ -1,39 +1,61 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGameLogic } from './GameLogic';
 import styles from './Game.module.css';
 import GamePreview from './GamePreview/GamePreview';
 import GameField from './GameField/GameField';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  changeGameStateType,
+  gameStateTypeSelector,
+} from '../../store/game/gameSlice';
+import { GameStateType } from '../../utils/types/game';
 
 function Game() {
-  const [disabled, setDisabled] = useState(false);
   const [started, setStarted] = useState({ isStarted: false, figure: '' });
+  const gameState = useSelector(gameStateTypeSelector);
   const gameLogic = useGameLogic();
+  const dispatch = useDispatch();
+
+  let cellsRef = useRef({} as NodeListOf<Element>);
 
   useEffect(() => {
-    gameLogic.init(document.querySelectorAll('.cell'), started.figure);
+    cellsRef.current = document.querySelectorAll('.cell');
+    gameLogic.init(cellsRef.current, started.figure);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started]);
 
   const handleCellClick: React.MouseEventHandler<HTMLTableElement> = event => {
     if (!(event.target instanceof Element)) return;
     if (!event.target.classList.contains('cell')) return;
-    const el = gameLogic.fillCell(event.target)!;
+    const el = gameLogic.fillCell(event.target);
+    if (!el) return;
+    el.classList.add(styles.cannotuse);
     renderButtonText(el);
     if (gameLogic.checkWinner()) {
-      paintWinner(gameLogic.getWinStrick());
+      handleGameOver();
     }
   };
 
   const handleGameStart = (figure: string) => {
+    dispatch(changeGameStateType(GameStateType.PLAY));
     setStarted({ isStarted: true, figure });
   };
 
+  const handleGameRestart = () => {
+    gameLogic.init(cellsRef.current, started.figure);
+    dispatch(changeGameStateType(GameStateType.PLAY));
+    cellsRef.current.forEach(cell => cell.classList.remove(styles.cannotuse));
+  };
+
+  const handleGameOver = () => {
+    dispatch(changeGameStateType(GameStateType.OVER));
+    cellsRef.current.forEach(cell => cell.classList.add(styles.cannotuse));
+    paintWinner(gameLogic.getWinStrick());
+  };
+
   const paintWinner = (winCells: number[]) => {
-    setDisabled(true);
     winCells.forEach(cellNum => {
-      document
-        .querySelectorAll('.cell')
-        [cellNum].firstElementChild?.classList.add(styles.winner);
+      cellsRef.current[cellNum].firstElementChild?.classList.add(styles.winner);
     });
   };
 
@@ -47,10 +69,15 @@ function Game() {
       ?.insertAdjacentElement('afterbegin', h1);
   };
 
-  if (started.isStarted) {
-    return <GameField handleCellClick={handleCellClick} disabled={disabled} />;
+  switch (gameState) {
+    case GameStateType.RESTART:
+    case GameStateType.PLAY:
+    case GameStateType.OVER:
+      gameState === GameStateType.RESTART && handleGameRestart();
+      return <GameField handleCellClick={handleCellClick} />;
+    case GameStateType.CHOOSE:
+      return <GamePreview handleGameStart={handleGameStart} />;
   }
-  return <GamePreview handleGameStart={handleGameStart} />;
 }
 
 export default Game;

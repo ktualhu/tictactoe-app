@@ -12,14 +12,13 @@ export const useGameLogic = () => {
   let winStrickFigures: number[] = [];
 
   const init = (paramCells: NodeListOf<Element>, fig: string = 'X') => {
-    setFigure(fig);
-    const newField = field.slice();
-    paramCells.forEach((cell, i) => {
+    paramCells.forEach(cell => {
       cell.textContent = '';
-      newField[i + 1] = '';
+      cell.classList.remove('cannotuse');
     });
+    setField(field => field.map((_, i) => (field[i] = '')));
+    setFigure(fig);
     setCells(paramCells);
-    setField(newField);
   };
 
   const fillCell = (cell: Element) => {
@@ -38,7 +37,6 @@ export const useGameLogic = () => {
     }
 
     index += +cellId.slice(1);
-
     if (field[index]) return;
     const newField = field.slice();
     newField[index] = figure;
@@ -49,8 +47,9 @@ export const useGameLogic = () => {
   };
 
   const checkWinner = function () {
-    if (checkHorVert() || checkDiag()) return true;
-    else {
+    if (checkHorVert() || checkDiag()) {
+      return true;
+    } else {
       setFigure(figure === 'X' ? '0' : 'X');
       return false;
     }
@@ -98,15 +97,17 @@ export const useGameLogic = () => {
         diagStrick++;
         continue;
       }
-      for (let j = 2; j >= 0; j--) {
-        if (cells[fieldArr[i][j] - 1].textContent === figure) {
-          diagWinStrickFigures.push(fieldArr[i][j] - 1);
-          i++;
-          diagStrick++;
-        } else {
-          diagStrick = 0;
-          diagWinStrickFigures = [];
-          break;
+      if (i === 0) {
+        for (let j = 2; j >= 0; j--) {
+          if (cells[fieldArr[i][j] - 1].textContent === figure) {
+            diagWinStrickFigures.push(fieldArr[i][j] - 1);
+            i++;
+            diagStrick++;
+          } else {
+            diagStrick = 0;
+            diagWinStrickFigures = [];
+            break;
+          }
         }
       }
     }

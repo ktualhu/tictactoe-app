@@ -5,7 +5,6 @@ type GameFieldProps = {
   handleCellClick: (
     event: React.MouseEvent<HTMLTableElement, MouseEvent>
   ) => void;
-  disabled: boolean;
 };
 
 function GameField(props: GameFieldProps) {
@@ -18,7 +17,6 @@ function GameField(props: GameFieldProps) {
         <tr>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="00"
@@ -26,7 +24,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="01"
@@ -34,7 +31,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="02"
@@ -44,7 +40,6 @@ function GameField(props: GameFieldProps) {
         <tr>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="10"
@@ -52,7 +47,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="11"
@@ -60,7 +54,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="12"
@@ -70,7 +63,6 @@ function GameField(props: GameFieldProps) {
         <tr>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="20"
@@ -78,7 +70,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="21"
@@ -86,7 +77,6 @@ function GameField(props: GameFieldProps) {
           </td>
           <td className={styles.td}>
             <Button
-              disabled={props.disabled}
               variant="light"
               className={`${styles.cell} cell`}
               id="22"

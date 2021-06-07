@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
+import { changeGameStateType } from '../../store/game/gameSlice';
 import RootState from '../../store/state/rootState';
 import {
   currentUserSelector,
   updateMyUser,
 } from '../../store/users/usersSlice';
 import { getRoomById } from '../../utils/helpers/selectRoom';
+import { GameStateType } from '../../utils/types/game';
 import Chat from '../Chat/Chat';
 import Game from '../Game/Game';
 
@@ -44,6 +46,10 @@ function RoomComponent(props: RoomProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleRestartGame = () => {
+    dispatch(changeGameStateType(GameStateType.RESTART));
+  };
+
   const handleLeaveRoom = () => {
     http.post('/rooms/leave').then(() => {
       dispatch(updateMyUser(''));
@@ -58,12 +64,18 @@ function RoomComponent(props: RoomProps) {
         <Row className="p-3">
           <Col>
             <Row className="pl-3">
-              {/* <Title text={room.roomTitle} /> */}
               <h3>{room.roomTitle}</h3>
             </Row>
           </Col>
-          <Col xs lg={2}>
+          <Col>
             <Row className="pr-4 justify-content-end">
+              <Button
+                variant="info"
+                className="mr-3"
+                onClick={handleRestartGame}
+              >
+                Restart
+              </Button>
               <Button variant="info" onClick={handleLeaveRoom}>
                 Back To Lobby
               </Button>
