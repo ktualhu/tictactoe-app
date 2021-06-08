@@ -14,10 +14,6 @@ export const useRooms = () => {
       withCredentials: true,
     });
 
-    roomSocketRef.current.on('room:join', (data: any) => {
-      console.log(`${data} was connected to the room`);
-    });
-
     roomSocketRef.current.on('room:leave', (data: any) => {
       console.log(`${data} was left the room`);
     });
@@ -39,12 +35,8 @@ export const useRooms = () => {
     isHere: boolean = false
   ) => {
     if (!isHere) {
-      // update room for inner users
-      roomSocketRef.current.emit('room:join', { roomId, username });
-      // update room for outer users
+      // update room for all clients(inner and outer)
       addUser(roomId, username);
-      // update chat
-      // showChatJoinAlert(username, roomId);
     }
   };
 

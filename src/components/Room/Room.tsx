@@ -34,14 +34,13 @@ function RoomComponent(props: RoomProps) {
   );
 
   useEffect(() => {
-    console.log('here', currentUser);
-
     http
       .get(`/rooms/${roomId}`)
       .then(() => {
         dispatch(updateMyUser(roomId!));
       })
       .catch(error => console.error(error));
+
     roomId && joinRoom(roomId, currentUser.username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,7 +83,7 @@ function RoomComponent(props: RoomProps) {
         </Row>
         <Row className="pl-3 pr-4 pb-4">
           <Col>
-            <Game />
+            <Game playersCounter={room.roomUsers.length} />
           </Col>
           <Col>
             <Chat roomId={roomId!} />

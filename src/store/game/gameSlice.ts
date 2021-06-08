@@ -4,7 +4,7 @@ import GameState from '../state/gameState';
 import RootState from '../state/rootState';
 
 const initialState: GameState = {
-  gameState: GameStateType.CHOOSE,
+  gameState: GameStateType.WAIT,
 };
 
 export const gameSlice = createSlice({

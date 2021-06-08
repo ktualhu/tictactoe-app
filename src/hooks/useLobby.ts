@@ -25,6 +25,7 @@ export const useLobby = () => {
     });
 
     socketRef.current.on('room:add_user', room => {
+      console.log('room:add_user', room);
       dispatch(sliceUpdateRoom(room));
     });
 
@@ -47,6 +48,8 @@ export const useLobby = () => {
   };
 
   const addUser = (id: string, username: string) => {
+    console.log(id, username);
+
     socketRef.current.emit('room:add_user', { id, username });
   };
 

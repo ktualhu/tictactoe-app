@@ -30,8 +30,6 @@ function Lobby(props: LobbyProps) {
     http
       .get('/rooms')
       .then(resp => {
-        console.log(resp);
-
         if (resp.data.rooms) {
           dispatch(updateRooms(resp.data.rooms));
         }

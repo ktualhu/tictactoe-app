@@ -9,14 +9,26 @@ import {
   gameStateTypeSelector,
 } from '../../store/game/gameSlice';
 import { GameStateType } from '../../utils/types/game';
+import GameWait from './GameWait/GameWait';
 
-function Game() {
+type GameProps = {
+  playersCounter?: number;
+};
+
+function Game(props: GameProps) {
   const [started, setStarted] = useState({ isStarted: false, figure: '' });
   const gameState = useSelector(gameStateTypeSelector);
   const gameLogic = useGameLogic();
   const dispatch = useDispatch();
 
   let cellsRef = useRef({} as NodeListOf<Element>);
+
+  useEffect(() => {
+    if (props.playersCounter === 2)
+      dispatch(changeGameStateType(GameStateType.CHOOSE));
+    else dispatch(changeGameStateType(GameStateType.WAIT));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.playersCounter]);
 
   useEffect(() => {
     cellsRef.current = document.querySelectorAll('.cell');
@@ -77,6 +89,8 @@ function Game() {
       return <GameField handleCellClick={handleCellClick} />;
     case GameStateType.CHOOSE:
       return <GamePreview handleGameStart={handleGameStart} />;
+    case GameStateType.WAIT:
+      return <GameWait />;
   }
 }
 
