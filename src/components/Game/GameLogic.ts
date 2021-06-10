@@ -11,7 +11,7 @@ export const useGameLogic = () => {
   const [figure, setFigure] = useState('');
   let winStrickFigures: number[] = [];
 
-  const init = (paramCells: NodeListOf<Element>, fig: string = 'X') => {
+  const init = (paramCells: NodeListOf<Element>, fig: string) => {
     paramCells.forEach(cell => {
       cell.textContent = '';
       cell.classList.remove('cannotuse');

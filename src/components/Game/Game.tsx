@@ -8,8 +8,8 @@ import {
   changeGameStateType,
   gameStateTypeSelector,
 } from '../../store/game/gameSlice';
-import { GameStateType } from '../../utils/types/game';
-import GameWait from './GameWait/GameWait';
+import { GamePreviewState, GameStateType } from '../../utils/types/game';
+// import GameWait from './GameWait/GameWait';
 
 type GameProps = {
   playersCounter?: number;
@@ -23,7 +23,10 @@ function Game(props: GameProps) {
 
   let cellsRef = useRef({} as NodeListOf<Element>);
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
+    console.log(gameState, props.playersCounter);
     if (props.playersCounter === 2)
       dispatch(changeGameStateType(GameStateType.CHOOSE));
     else dispatch(changeGameStateType(GameStateType.WAIT));
@@ -88,9 +91,22 @@ function Game(props: GameProps) {
       gameState === GameStateType.RESTART && handleGameRestart();
       return <GameField handleCellClick={handleCellClick} />;
     case GameStateType.CHOOSE:
-      return <GamePreview handleGameStart={handleGameStart} />;
     case GameStateType.WAIT:
-      return <GameWait />;
+      return (
+        <GamePreview
+          handleGameStart={handleGameStart}
+          curState={
+            gameState === GameStateType.WAIT
+              ? GamePreviewState.WAIT
+              : GamePreviewState.PICK
+          }
+          waitReason={
+            gameState === GameStateType.WAIT
+              ? 'Waiting for one more player'
+              : ''
+          }
+        />
+      );
   }
 }
 

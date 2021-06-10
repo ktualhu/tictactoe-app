@@ -1,38 +1,69 @@
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import styles from '../Game.module.css';
+import { useEffect, useState } from 'react';
+import { Container } from 'react-bootstrap';
+import getAllPossibleChars from '../../../utils/helpers/possibleChars';
+import { GamePreviewState } from '../../../utils/types/game';
+import GamePickFigure from './GamePickFigure';
+import GameShowFigure from './GameShowFigure';
+import GameWait from './GameWait';
 
 type GamePreviewProps = {
   handleGameStart: (figure: string) => void;
+  curState: GamePreviewState;
+  waitReason: string;
 };
 
 function GamePreview(props: GamePreviewProps) {
+  const [figure, setFigure] = useState('');
+  const [previewState, setPreviewState] = useState({} as GamePreviewState);
+
+  useEffect(() => {
+    setPreviewState(props.curState);
+  }, [props.curState]);
+
+  const onTimesOut = (state: GamePreviewState) => {
+    switch (state) {
+      case GamePreviewState.PICK:
+        setPreviewState(GamePreviewState.WAIT);
+        break;
+      case GamePreviewState.WAIT:
+        pickRandomFigure();
+        setPreviewState(GamePreviewState.SHOW);
+        break;
+    }
+  };
+
+  const pickRandomFigure = () => {
+    const chars = getAllPossibleChars();
+    const randN = Math.round(Math.random() * chars.length);
+    setFigure(chars[randN].toUpperCase());
+  };
+
+  const renderCurrentGamePreviewState = () => {
+    switch (previewState) {
+      case GamePreviewState.PICK:
+        return (
+          <GamePickFigure
+            handleGameStart={props.handleGameStart}
+            onTimesOut={state => onTimesOut(state)}
+          />
+        );
+
+      case GamePreviewState.WAIT:
+        return (
+          <GameWait
+            simulated={!!props.waitReason || false}
+            reason={props.waitReason || 'Picking figure for you..'}
+            onTimesOut={state => onTimesOut(state)}
+          />
+        );
+      case GamePreviewState.SHOW:
+        return <GameShowFigure figure={figure} />;
+    }
+  };
+
   return (
-    <Container className={`bg-white text-dark ${styles.table}`}>
-      <Row style={{ height: '10%' }}>
-        <Col className="d-flex justify-content-center">
-          <h1>Choose Your Figure</h1>
-        </Col>
-      </Row>
-      <Row className="text-white" style={{ height: '80%' }}>
-        <Col className="align-self-center mr-3 ml-3">
-          <Button
-            variant="dark"
-            className={styles.cell}
-            onClick={() => props.handleGameStart('X')}
-          >
-            <h1 className="display-3">X</h1>
-          </Button>
-        </Col>
-        <Col className="align-self-center mr-3 ml-3">
-          <Button
-            variant="dark"
-            className={styles.cell}
-            onClick={() => props.handleGameStart('0')}
-          >
-            <h1 className="display-3">0</h1>
-          </Button>
-        </Col>
-      </Row>
+    <Container className="d-flex align-items-center" style={{ height: '100%' }}>
+      {renderCurrentGamePreviewState()}
     </Container>
   );
 }

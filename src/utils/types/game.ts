@@ -5,3 +5,9 @@ export enum GameStateType {
   PLAY = 'play',
   OVER = 'over',
 }
+
+export enum GamePreviewState {
+  PICK = 'pick',
+  WAIT = 'wait',
+  SHOW = 'show',
+}
