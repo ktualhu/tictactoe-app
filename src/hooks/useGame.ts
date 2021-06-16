@@ -14,22 +14,18 @@ export const useGame = (gameData?: GameAction) => {
     });
 
     gameSocketRef.current.on('game:join', (data: Game) => {
-      console.log('on game:join', data);
       dispatch(updateGame(data));
     });
 
     gameSocketRef.current.on('game:pick', (data: Game) => {
-      console.log('on game:pick', data);
       dispatch(updateGame(data));
     });
 
     gameSocketRef.current.on('game:ready', (data: Game) => {
-      console.log(data);
       data && dispatch(updateGame(data));
     });
 
     gameSocketRef.current.on('game:leave', (data: Game) => {
-      console.log('game:leave', data);
       dispatch(updateGame(data));
     });
 
@@ -55,8 +51,6 @@ export const useGame = (gameData?: GameAction) => {
   };
 
   const gameLeave = (gameData: GameAction) => {
-    console.log(gameData);
-
     gameSocketRef.current.emit('game:leave', gameData);
   };
 

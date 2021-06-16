@@ -90,8 +90,6 @@ function GamePreview(props: GamePreviewProps) {
   }, [props.players]);
 
   const onTimesOut = (state: GamePreviewState) => {
-    console.log(state);
-
     switch (state) {
       case GamePreviewState.PICK:
         waitReasonRef.current = GAME_PICKING_FIGURE_NOTIFY;

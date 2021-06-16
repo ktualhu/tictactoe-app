@@ -18,12 +18,10 @@ import { useDispatch } from 'react-redux';
 import { auth } from '../../../store/users/usersSlice';
 import { User } from '../../../utils/types/users';
 import http from '../../../http';
-import { useLobby } from '../../../hooks/useLobby';
 
 function LoginForm({ history }: RouteComponentProps) {
   const userField = useFormField();
   const dispatch = useDispatch();
-  const { userJoin } = useLobby();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +29,6 @@ function LoginForm({ history }: RouteComponentProps) {
       http
         .post('/auth/login', { username: userField.value })
         .then(resp => {
-          userJoin(userField.value);
           dispatch(auth(resp.data as User));
           history.replace('/');
         })
