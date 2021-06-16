@@ -1,5 +1,6 @@
-import { GameStateType } from '../../utils/types/game';
+import { Game, GameStateType } from '../../utils/types/game';
 
 export default interface GameState {
-  gameState: GameStateType;
+  // gameState: GameStateType;
+  game: Game;
 }

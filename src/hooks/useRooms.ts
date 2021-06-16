@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { useChat } from './useChat';
+import { useGame } from './useGame';
 // import { useChat } from './useChat';
 import { useLobby } from './useLobby';
 
@@ -8,6 +9,7 @@ export const useRooms = () => {
   const roomSocketRef = useRef({} as Socket);
   const { addUser, removeUser } = useLobby();
   const { showChatLeaveAlert } = useChat();
+  const { gameLeave } = useGame();
 
   useEffect(() => {
     roomSocketRef.current = io('http://localhost:5001/room', {
@@ -43,6 +45,7 @@ export const useRooms = () => {
   const leaveRoom = (roomId: string, username: string) => {
     removeUser(roomId, username);
     showChatLeaveAlert(roomId, username);
+    gameLeave({ roomId, username });
     roomSocketRef.current.emit('room:leave', { roomId, username });
   };
 

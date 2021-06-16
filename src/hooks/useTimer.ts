@@ -10,8 +10,6 @@ const useTimer = (time: number, onTimesOut: () => void) => {
 
   const handleTimer = () => {
     setTimeout(() => {
-      console.log(timer);
-
       timer > 0 ? setTimer(timer - 1) : onTimesOut();
     }, 1000);
   };
@@ -20,7 +18,11 @@ const useTimer = (time: number, onTimesOut: () => void) => {
     return timer;
   };
 
-  return { getTimer };
+  const setNewTimer = (newTimer: number) => {
+    setTimer(newTimer);
+  };
+
+  return { getTimer, setNewTimer };
 };
 
 export default useTimer;

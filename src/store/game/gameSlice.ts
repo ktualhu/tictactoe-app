@@ -1,24 +1,52 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameStateType } from '../../utils/types/game';
+import { Game, GameStateType, GameUser } from '../../utils/types/game';
 import GameState from '../state/gameState';
 import RootState from '../state/rootState';
 
 const initialState: GameState = {
-  gameState: GameStateType.WAIT,
+  game: {} as Game,
 };
 
 export const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
+    updateGame: (state, action: PayloadAction<Game>) => {
+      state.game = action.payload;
+    },
+
+    updateUser: (state, action: PayloadAction<GameUser>) => {
+      const user = state.game.players.find(
+        player => player.username === action.payload.username
+      );
+      if (user) {
+        user.figure = action.payload.figure;
+        user.goFirst = action.payload.goFirst;
+      }
+    },
+
     changeGameStateType: (state, action: PayloadAction<GameStateType>) => {
-      state.gameState = action.payload;
+      state.game.gameState = action.payload;
+    },
+
+    clearGame: state => {
+      state.game = {} as Game;
     },
   },
 });
 
-export const { changeGameStateType } = gameSlice.actions;
+export const { updateGame, updateUser, changeGameStateType, clearGame } =
+  gameSlice.actions;
 
-export const gameStateTypeSelector = (state: RootState) => state.game.gameState;
+export const gameStateSelector = (state: RootState) =>
+  state.game.game.gameState;
+
+export const gameReadyStateSelector = (state: RootState) =>
+  state.game.game.gameReadyState;
+
+export const gamePickStateSelector = (state: RootState) =>
+  state.game.game.gamePickState;
+
+export const gameUserSelector = (state: RootState) => state.game.game.players;
 
 export default gameSlice.reducer;

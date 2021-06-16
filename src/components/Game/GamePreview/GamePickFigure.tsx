@@ -13,7 +13,7 @@ import { GamePreviewState } from '../../../utils/types/game';
 import { PICK_FIGURE_TIMER } from '../../../utils/constants';
 
 type GamePickFigureProps = {
-  handleGameStart: (figure: string) => void;
+  handlePickFigure: (figure: string) => void;
   onTimesOut: (state: GamePreviewState) => void;
 };
 
@@ -37,7 +37,12 @@ const GamePickFigure = (props: GamePickFigureProps) => {
           <span className="font-weight-bold">{timer.getTimer()}</span>
         </h1>
       </Row>
-      <Form onSubmit={() => props.handleGameStart(figure)}>
+      <Form
+        onSubmit={event => {
+          event.preventDefault();
+          props.handlePickFigure(figure);
+        }}
+      >
         <Row className="justify-content-md-center mb-3">
           <FormGroup>
             <InputGroup>

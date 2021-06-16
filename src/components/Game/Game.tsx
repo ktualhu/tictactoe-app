@@ -6,32 +6,34 @@ import GameField from './GameField/GameField';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   changeGameStateType,
-  gameStateTypeSelector,
+  gameStateSelector,
 } from '../../store/game/gameSlice';
-import { GamePreviewState, GameStateType } from '../../utils/types/game';
-// import GameWait from './GameWait/GameWait';
+import { GameStateType } from '../../utils/types/game';
+import { currentUserSelector } from '../../store/users/usersSlice';
+import { useGame } from '../../hooks/useGame';
 
 type GameProps = {
-  playersCounter?: number;
+  roomId: string;
+  playersCounter: number;
 };
 
 function Game(props: GameProps) {
   const [started, setStarted] = useState({ isStarted: false, figure: '' });
-  const gameState = useSelector(gameStateTypeSelector);
+  const currentUser = useSelector(currentUserSelector);
+  const gameState = useSelector(gameStateSelector);
   const gameLogic = useGameLogic();
   const dispatch = useDispatch();
 
-  let cellsRef = useRef({} as NodeListOf<Element>);
-
-  useEffect(() => {}, []);
+  const cellsRef = useRef({} as NodeListOf<Element>);
+  const game = useGame({
+    roomId: props.roomId,
+    username: currentUser.username,
+  });
 
   useEffect(() => {
-    console.log(gameState, props.playersCounter);
-    if (props.playersCounter === 2)
-      dispatch(changeGameStateType(GameStateType.CHOOSE));
-    else dispatch(changeGameStateType(GameStateType.WAIT));
+    game.gameJoin();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.playersCounter]);
+  }, []);
 
   useEffect(() => {
     cellsRef.current = document.querySelectorAll('.cell');
@@ -90,21 +92,12 @@ function Game(props: GameProps) {
     case GameStateType.OVER:
       gameState === GameStateType.RESTART && handleGameRestart();
       return <GameField handleCellClick={handleCellClick} />;
-    case GameStateType.CHOOSE:
-    case GameStateType.WAIT:
+    default:
       return (
         <GamePreview
+          roomId={props.roomId}
           handleGameStart={handleGameStart}
-          curState={
-            gameState === GameStateType.WAIT
-              ? GamePreviewState.WAIT
-              : GamePreviewState.PICK
-          }
-          waitReason={
-            gameState === GameStateType.WAIT
-              ? 'Waiting for one more player'
-              : ''
-          }
+          players={props.playersCounter}
         />
       );
   }
