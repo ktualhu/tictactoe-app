@@ -21,7 +21,7 @@ export const gameSlice = createSlice({
       );
       if (user) {
         user.figure = action.payload.figure;
-        user.goFirst = action.payload.goFirst;
+        user.move = action.payload.move;
       }
     },
 
@@ -47,6 +47,9 @@ export const gameReadyStateSelector = (state: RootState) =>
 export const gamePickStateSelector = (state: RootState) =>
   state.game.game.gamePickState;
 
-export const gameUserSelector = (state: RootState) => state.game.game.players;
+export const gamePlayersSelector = (state: RootState) =>
+  state.game.game.players;
+
+export const gameDataSelector = (state: RootState) => state.game.game.gameData;
 
 export default gameSlice.reducer;

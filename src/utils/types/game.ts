@@ -24,8 +24,8 @@ export enum GamePreviewState {
 
 export enum GameReadyState {
   NOT_READY = 'not_ready',
-  READY = 'ready',
-  PLAY = 'play',
+  READY_ONE = 'ready_one',
+  READY_ALL = 'ready_all',
 }
 
 export enum GamePickState {
@@ -41,17 +41,26 @@ export interface Game {
   gameState: GameStateType;
   gameReadyState: GameReadyState;
   gamePickState: GamePickState;
+  gameData: GameData;
 }
 
-export class GameUser {
-  username: string = '';
-  figure?: string = '';
-  goFirst?: boolean = false;
+export interface GameData {
+  field: string[];
+  won: boolean;
+  winStrickCells?: number[];
+}
+
+export interface GameUser {
+  username: string;
+  figure?: string;
+  goFirst?: boolean;
+  move?: boolean;
 }
 
 export interface GameAction {
   roomId: string;
   username: string;
   figure?: string;
-  goFirst?: boolean;
+  move?: boolean;
+  moveCellId?: number;
 }

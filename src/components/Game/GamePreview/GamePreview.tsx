@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { useGame } from '../../../hooks/useGame';
 import {
   gamePickStateSelector,
+  gamePlayersSelector,
   gameReadyStateSelector,
-  gameUserSelector,
 } from '../../../store/game/gameSlice';
 import { currentUserSelector } from '../../../store/users/usersSlice';
 import getAllPossibleChars from '../../../utils/helpers/possibleChars';
@@ -37,7 +37,7 @@ function GamePreview(props: GamePreviewProps) {
   const currentUser = useSelector(currentUserSelector);
   const gameReadyState = useSelector(gameReadyStateSelector);
   const gamePickState = useSelector(gamePickStateSelector);
-  const gameUser = useSelector(gameUserSelector)?.find(
+  const gameUser = useSelector(gamePlayersSelector)?.find(
     user => user.username === currentUser.username
   );
   const game = useGame({
@@ -53,11 +53,11 @@ function GamePreview(props: GamePreviewProps) {
   const simulatedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (gameReadyState === GameReadyState.READY) {
+    if (gameReadyState === GameReadyState.READY_ONE) {
       waitReasonRef.current = GAME_WAITING_FOR_PLAYER_READY;
       simulatedRef.current = false;
       setPreviewState(GamePreviewState.WAIT);
-    } else if (gameReadyState === GameReadyState.PLAY) {
+    } else if (gameReadyState === GameReadyState.READY_ALL) {
       waitReasonRef.current = 'some loading...';
       props.handleGameStart(figure);
     }

@@ -22,7 +22,8 @@
   color: #333;
 }
 
-.cannotuse {
+.cannotuse,
+.cannotmove {
   pointer-events: none;
   cursor: not-allowed;
 }

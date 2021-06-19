@@ -2,87 +2,44 @@ import { Table, Button } from 'react-bootstrap';
 import styles from '../Game.module.css';
 
 type GameFieldProps = {
+  field: string[];
   handleCellClick: (
     event: React.MouseEvent<HTMLTableElement, MouseEvent>
   ) => void;
 };
 
 function GameField(props: GameFieldProps) {
+  const renderTrBlock = (startId: number) => {
+    return (
+      <tr>
+        {props.field.slice(startId, startId + 3).map((_, i) => {
+          return renderTdCell(i + startId);
+        })}
+      </tr>
+    );
+  };
+
+  const renderTdCell = (id: number) => {
+    return (
+      <td className={styles.td}>
+        <Button
+          variant="light"
+          className={`${styles.cell} cell`}
+          id={id.toString()}
+        ></Button>
+      </td>
+    );
+  };
+
   return (
     <Table
       className={`${styles.table} table-borderless table-sm`}
       onClick={props.handleCellClick}
     >
       <tbody>
-        <tr>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="00"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="01"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="02"
-            ></Button>
-          </td>
-        </tr>
-        <tr>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="10"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="11"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="12"
-            ></Button>
-          </td>
-        </tr>
-        <tr>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="20"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="21"
-            ></Button>
-          </td>
-          <td className={styles.td}>
-            <Button
-              variant="light"
-              className={`${styles.cell} cell`}
-              id="22"
-            ></Button>
-          </td>
-        </tr>
+        {props.field.map((_, i) => {
+          return i % 3 === 0 ? renderTrBlock(i) : null;
+        })}
       </tbody>
     </Table>
   );

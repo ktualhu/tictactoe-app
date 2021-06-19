@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { useGame } from '../../hooks/useGame';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
 import { changeGameStateType } from '../../store/game/gameSlice';
@@ -32,6 +33,10 @@ function RoomComponent(props: RoomProps) {
   const room = useSelector((state: RootState) =>
     roomId ? getRoomById(state, roomId) : null
   );
+  const game = useGame({
+    roomId: roomId!,
+    username: currentUser.username,
+  });
 
   useEffect(() => {
     http
@@ -46,7 +51,8 @@ function RoomComponent(props: RoomProps) {
   }, []);
 
   const handleRestartGame = () => {
-    dispatch(changeGameStateType(GameStateType.RESTART));
+    // dispatch(changeGameStateType(GameStateType.RESTART));
+    game.gameRestart();
   };
 
   const handleLeaveRoom = () => {
