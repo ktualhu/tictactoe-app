@@ -1,18 +1,19 @@
 import { useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
+import { useChat } from './useChat';
+import { useGame } from './useGame';
+// import { useChat } from './useChat';
 import { useLobby } from './useLobby';
 
 export const useRooms = () => {
   const roomSocketRef = useRef({} as Socket);
   const { addUser, removeUser } = useLobby();
+  const { showChatLeaveAlert } = useChat();
+  const { gameLeave } = useGame();
 
   useEffect(() => {
     roomSocketRef.current = io('http://localhost:5001/room', {
       withCredentials: true,
-    });
-
-    roomSocketRef.current.on('room:join', (data: any) => {
-      console.log(`${data} was connected to the room`);
     });
 
     roomSocketRef.current.on('room:leave', (data: any) => {
@@ -36,15 +37,15 @@ export const useRooms = () => {
     isHere: boolean = false
   ) => {
     if (!isHere) {
-      // update room for inner users
-      roomSocketRef.current.emit('room:join', { roomId, username });
-      // update room for outer users
+      // update room for all clients(inner and outer)
       addUser(roomId, username);
     }
   };
 
   const leaveRoom = (roomId: string, username: string) => {
     removeUser(roomId, username);
+    showChatLeaveAlert(roomId, username);
+    gameLeave({ roomId, username });
     roomSocketRef.current.emit('room:leave', { roomId, username });
   };
 

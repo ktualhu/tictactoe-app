@@ -2,14 +2,17 @@ import React, { useEffect } from 'react';
 import { Button, Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { useGame } from '../../hooks/useGame';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
+import { changeGameStateType } from '../../store/game/gameSlice';
 import RootState from '../../store/state/rootState';
 import {
   currentUserSelector,
   updateMyUser,
 } from '../../store/users/usersSlice';
 import { getRoomById } from '../../utils/helpers/selectRoom';
+import { GameStateType } from '../../utils/types/game';
 import Chat from '../Chat/Chat';
 import Game from '../Game/Game';
 
@@ -30,6 +33,10 @@ function RoomComponent(props: RoomProps) {
   const room = useSelector((state: RootState) =>
     roomId ? getRoomById(state, roomId) : null
   );
+  const game = useGame({
+    roomId: roomId!,
+    username: currentUser.username,
+  });
 
   useEffect(() => {
     http
@@ -38,9 +45,15 @@ function RoomComponent(props: RoomProps) {
         dispatch(updateMyUser(roomId!));
       })
       .catch(error => console.error(error));
+
     roomId && joinRoom(roomId, currentUser.username);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleRestartGame = () => {
+    // dispatch(changeGameStateType(GameStateType.RESTART));
+    game.gameRestart();
+  };
 
   const handleLeaveRoom = () => {
     http.post('/rooms/leave').then(() => {
@@ -56,24 +69,30 @@ function RoomComponent(props: RoomProps) {
         <Row className="p-3">
           <Col>
             <Row className="pl-3">
-              {/* <Title text={room.roomTitle} /> */}
               <h3>{room.roomTitle}</h3>
             </Row>
           </Col>
-          <Col xs lg={2}>
+          <Col>
             <Row className="pr-4 justify-content-end">
+              <Button
+                variant="info"
+                className="mr-3"
+                onClick={handleRestartGame}
+              >
+                Restart
+              </Button>
               <Button variant="info" onClick={handleLeaveRoom}>
                 Back To Lobby
               </Button>
             </Row>
           </Col>
         </Row>
-        <Row className="pl-3">
+        <Row className="pl-3 pr-4 pb-4">
           <Col>
-            <Game />
+            <Game roomId={roomId!} playersCounter={room.roomUsers.length} />
           </Col>
           <Col>
-            <Chat />
+            <Chat roomId={roomId!} />
           </Col>
         </Row>
       </React.Fragment>

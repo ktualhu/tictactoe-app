@@ -1,33 +1,134 @@
-import { useEffect, useState } from 'react';
-import { Row, Col, Container, Table, Button } from 'react-bootstrap';
-import { useGameLogic } from './GameLogic';
+import { useEffect, useRef } from 'react';
 import styles from './Game.module.css';
+import GamePreview from './GamePreview/GamePreview';
+import GameField from './GameField/GameField';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  changeGameStateType,
+  gameDataSelector,
+  gameStateSelector,
+} from '../../store/game/gameSlice';
+import { GameAction, GameData, GameStateType } from '../../utils/types/game';
+import { currentUserSelector } from '../../store/users/usersSlice';
+import { useGame } from '../../hooks/useGame';
+import RootState from '../../store/state/rootState';
+import { getCurrentPlayer } from '../../utils/helpers/currentPlayer';
 
-function Game() {
-  const [disable, setDisable] = useState(false);
-  const gameLogic = useGameLogic();
+type GameProps = {
+  roomId: string;
+  playersCounter: number;
+};
+
+function Game(props: GameProps) {
+  const currentUser = useSelector(currentUserSelector);
+  const currentPlayer = useSelector((state: RootState) =>
+    getCurrentPlayer(state, currentUser.username)
+  ); // can use it only after game is ready to play
+  const gameState = useSelector(gameStateSelector);
+  const gameData = useSelector(gameDataSelector) || ({} as GameData);
+  const dispatch = useDispatch();
+
+  const cellsRef = useRef({} as NodeListOf<Element>);
+  const game = useGame({
+    roomId: props.roomId,
+    username: currentUser.username,
+  });
 
   useEffect(() => {
-    gameLogic.init(document.querySelectorAll('.cell'));
+    game.gameJoin();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    switch (gameState) {
+      case GameStateType.PLAY:
+        if (currentPlayer && currentPlayer.figure) {
+          cellsRef.current = document.querySelectorAll('.cell');
+          currentPlayer.goFirst ? blockField(false) : blockField(true);
+          initGameField();
+        }
+        break;
+      case GameStateType.RESTART:
+        handleGameRestart();
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
+
+  useEffect(() => {
+    if (currentPlayer?.move && gameState === GameStateType.PLAY) {
+      blockField(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPlayer?.move]);
+
+  useEffect(() => {
+    if (gameState === GameStateType.PLAY) {
+      const field = gameData.field;
+      cellsRef.current.forEach((cell, i) => {
+        cell.textContent = field[i];
+        renderButtonText(cell);
+      });
+      if (gameData.winStrickCells) {
+        paintWinner(gameData.winStrickCells);
+        handleGameOver();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameData.field, gameData.winStrickCells]);
+
+  const initGameField = () => {
+    cellsRef.current.forEach((cell, i) => {
+      cell.textContent = gameData.field[i];
+      cell.classList.remove('cannotuse');
+    });
+  };
 
   const handleCellClick: React.MouseEventHandler<HTMLTableElement> = event => {
     if (!(event.target instanceof Element)) return;
     if (!event.target.classList.contains('cell')) return;
-    const el = gameLogic.fillCell(event.target)!;
-    renderButtonText(el);
-    if (gameLogic.checkWinner()) {
-      paintWinner(gameLogic.getWinStrick());
-    }
+    if (!currentPlayer) return;
+    const cellId = +event.target.id;
+    const gameData: GameAction = {
+      roomId: props.roomId,
+      username: currentUser.username,
+      figure: currentPlayer.figure,
+      move: currentPlayer.move,
+      moveCellId: cellId,
+    };
+    game.gameMove(gameData);
+    blockField(true);
+  };
+
+  const handleGameStart = () => {
+    dispatch(changeGameStateType(GameStateType.PLAY));
+  };
+
+  const handleGameRestart = () => {
+    cellsRef.current.forEach(cell => cell.classList.remove(styles.cannotuse));
+    handleGameStart();
+  };
+
+  const handleGameOver = () => {
+    cellsRef.current.forEach(cell => cell.classList.add(styles.cannotuse));
   };
 
   const paintWinner = (winCells: number[]) => {
-    setDisable(true);
     winCells.forEach(cellNum => {
-      document
-        .querySelectorAll('.cell')
-        [cellNum].firstElementChild?.classList.add(styles.winner);
+      cellsRef.current[cellNum].firstElementChild?.classList.add(styles.winner);
+    });
+  };
+
+  /**
+   *
+   * @param toggle - on/off field blocking
+   * true - block, false - unblock
+   */
+  const blockField = (toggle: boolean) => {
+    cellsRef.current.forEach(cell => {
+      toggle
+        ? cell.classList.add(styles.cannotmove)
+        : cell.classList.remove(styles.cannotmove);
     });
   };
 
@@ -41,100 +142,22 @@ function Game() {
       ?.insertAdjacentElement('afterbegin', h1);
   };
 
-  return (
-    <Container>
-      <Row>
-        <Col>
-          <h1>Game</h1>
-        </Col>
-      </Row>
-      <Table
-        className={`${styles.table} table-borderless table-sm`}
-        onClick={handleCellClick}
-      >
-        <tbody>
-          <tr>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="00"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="01"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="02"
-              ></Button>
-            </td>
-          </tr>
-          <tr>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="10"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="11"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="12"
-              ></Button>
-            </td>
-          </tr>
-          <tr>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="20"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="21"
-              ></Button>
-            </td>
-            <td className={styles.td}>
-              <Button
-                disabled={disable}
-                variant="light"
-                className={`${styles.cell} cell`}
-                id="22"
-              ></Button>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    </Container>
-  );
+  switch (gameState) {
+    case GameStateType.RESTART:
+    case GameStateType.PLAY:
+    case GameStateType.OVER:
+      return (
+        <GameField field={gameData.field} handleCellClick={handleCellClick} />
+      );
+    default:
+      return (
+        <GamePreview
+          roomId={props.roomId}
+          handleGameStart={handleGameStart}
+          players={props.playersCounter}
+        />
+      );
+  }
 }
 
 export default Game;

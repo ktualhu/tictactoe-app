@@ -24,10 +24,6 @@ export const useLobby = () => {
       dispatch(roomAdd(data));
     });
 
-    // socketRef.current.on('room:update', room => {
-    //   dispatch(sliceUpdateRoom(room));
-    // });
-
     socketRef.current.on('room:add_user', room => {
       dispatch(sliceUpdateRoom(room));
     });
