@@ -10,7 +10,6 @@ import Layout from './components/Layout/Layout';
 import RoomComponent from './components/Room/Room';
 import http from './http';
 import { useEffect } from 'react';
-import NotFound from './components/UI/404';
 
 function App() {
   const isAuth = useSelector(selectIsAuth);
@@ -59,12 +58,6 @@ function App() {
           return !isAuth ? <LoginForm {...props} /> : <Redirect exact to="/" />;
         }}
       />
-      {/* <Route
-        path="/404"
-        render={props => {
-          return <NotFound {...props} />;
-        }}
-      /> */}
     </Switch>
   );
 }
