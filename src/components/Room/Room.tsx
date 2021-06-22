@@ -41,7 +41,9 @@ function RoomComponent(props: RoomProps) {
   useEffect(() => {
     http
       .get(`/rooms/${roomId}`)
-      .then(() => {
+      .then(resp => {
+        console.log(resp);
+
         dispatch(updateMyUser(roomId!));
       })
       .catch(error => console.error(error));

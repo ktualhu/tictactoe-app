@@ -2,7 +2,7 @@ import { Button, Row, Table } from 'react-bootstrap';
 import { Room } from '../../../utils/types/rooms';
 
 type MyTableProps = {
-  handleModal: () => void;
+  handleCreateRoom: () => void;
   handleJoinRoom: (id: string) => void;
   rooms: Room[];
 };
@@ -23,7 +23,7 @@ function MyTable(props: MyTableProps) {
             </td>
             <td>
               <Row className="pr-4 justify-content-end">
-                <Button variant="info" onClick={props.handleModal}>
+                <Button variant="info" onClick={props.handleCreateRoom}>
                   Create Room
                 </Button>
               </Row>

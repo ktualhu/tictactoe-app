@@ -1,26 +1,30 @@
 import { Modal } from 'react-bootstrap';
-import RoomForm from '../../Form/RoomForm/RoomForm';
+
+export interface IModal {
+  title: string;
+  show: boolean;
+  content: JSX.Element;
+}
 
 type MyModalProps = {
-  show: boolean;
   onHide: () => void;
+  data: IModal;
 };
 
 function MyModal(props: MyModalProps) {
   return (
     <Modal
-      {...props}
+      show={props.data.show}
+      onHide={props.onHide}
       centered
       size="sm"
       aria-labelledby="contained-modal-title-vcenter"
       animation={false}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Create Room</Modal.Title>
+        <Modal.Title>{props.data.title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <RoomForm onHide={props.onHide} />
-      </Modal.Body>
+      <Modal.Body>{props.data.content}</Modal.Body>
     </Modal>
   );
 }
