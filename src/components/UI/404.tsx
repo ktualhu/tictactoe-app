@@ -1,17 +1,27 @@
+import { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Route, RouteComponentProps } from 'react-router';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
+import Title from './Title/Title';
 
-interface IProps {
-  route: RouteComponentProps;
-}
-
-function NotFound(props: IProps) {
+function NotFound({ history }: RouteComponentProps) {
+  const [msg, setMsg] = useState('');
+  useEffect(() => {
+    if (history.location.state) {
+      setMsg(history.location.state as string);
+    } else {
+      history.replace('/');
+    }
+  }, []);
   return (
-    <Container className="h-100 d-flex justify-content-center text-white">
+    <Container className="h-100 d-flex justify-content-center">
       <Row className="justify-content-center align-items-center">
-        <Col className="p-5 bg-dark rounded">
-          <p className="fs-1">404 Not Found</p>
-          {/* <p className="fs-3">{props.route.history.location.state.}</p> */}
+        <Col>
+          <Title text="404 Error" />
+          <p className="font-weight-light">{msg}</p>
+          <Link to="/">
+            <p className="font-weight">Back to main</p>
+          </Link>
         </Col>
       </Row>
     </Container>

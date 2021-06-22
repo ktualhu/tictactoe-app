@@ -25,11 +25,9 @@ function RoomJoinForm(props: RoomProps) {
         props.onSuccess();
       } catch (err) {
         const { message } = err.response.data;
-        // setErrLabel(message);
         passwordField.changeInvalidValue(true, message);
       }
     } else {
-      // setErrLabel('Password is too short');
       passwordField.changeInvalidValue(true);
     }
   };

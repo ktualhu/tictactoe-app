@@ -25,6 +25,7 @@ export const useLobby = () => {
     });
 
     socketRef.current.on('room:add_user', room => {
+      if (!room) return;
       dispatch(sliceUpdateRoom(room));
     });
 

@@ -39,16 +39,16 @@ function RoomComponent(props: RoomProps) {
   });
 
   useEffect(() => {
-    http
-      .get(`/rooms/${roomId}`)
-      .then(resp => {
-        console.log(resp);
-
+    async function fetchData() {
+      try {
+        await http.get(`/rooms/${roomId}`);
         dispatch(updateMyUser(roomId!));
-      })
-      .catch(error => console.error(error));
-
-    roomId && joinRoom(roomId, currentUser.username);
+        roomId && joinRoom(roomId, currentUser.username);
+      } catch (e) {
+        props.routes?.history.replace('/404', e.response.data.message);
+      }
+    }
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
