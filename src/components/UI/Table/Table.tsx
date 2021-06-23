@@ -1,4 +1,4 @@
-import { Button, Row, Table } from 'react-bootstrap';
+import { Badge, Button, Row, Table } from 'react-bootstrap';
 import { Room } from '../../../utils/types/rooms';
 
 type MyTableProps = {
@@ -33,7 +33,14 @@ function MyTable(props: MyTableProps) {
             ? props.rooms.map(room => {
                 return (
                   <tr key={room.roomId}>
-                    <td>{room.roomTitle}</td>
+                    <td>
+                      {room.roomTitle}
+                      {room.roomPrivate ? (
+                        <Badge className="ml-1" variant="secondary">
+                          private
+                        </Badge>
+                      ) : null}
+                    </td>
                     <td>
                       <Row className="justify-content-center">
                         {room.roomUsers.length} / 2
