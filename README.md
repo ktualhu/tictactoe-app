@@ -1,3 +1,6 @@
+# About app
+App where users can create and unite into rooms(public/private) and play tic tac toe with each other.
+
 # Backend --> https://github.com/ktualhu/tictactoe-app-backend
 
 # Getting Started with Create React App
