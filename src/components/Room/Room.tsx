@@ -1,19 +1,18 @@
 import React, { useEffect } from 'react';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row, Tabs, Tab, Badge } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { useGame } from '../../hooks/useGame';
 import { useRooms } from '../../hooks/useRooms';
 import http from '../../http';
-import { changeGameStateType } from '../../store/game/gameSlice';
 import RootState from '../../store/state/rootState';
 import {
   currentUserSelector,
   updateMyUser,
 } from '../../store/users/usersSlice';
 import { getRoomById } from '../../utils/helpers/selectRoom';
-import { GameStateType } from '../../utils/types/game';
-import Chat from '../Chat/Chat';
+import Chat from '../ChatSection/Chat/Chat';
+import ChatSection from '../ChatSection/ChatSection';
 import Game from '../Game/Game';
 
 type MatchParams = {
@@ -93,9 +92,7 @@ function RoomComponent(props: RoomProps) {
           <Col>
             <Game roomId={roomId!} playersCounter={room.roomUsers.length} />
           </Col>
-          <Col>
-            <Chat roomId={roomId!} />
-          </Col>
+          <Col>{roomId ? <ChatSection roomId={roomId} /> : null}</Col>
         </Row>
       </React.Fragment>
     );
