@@ -6,6 +6,7 @@ import RootState from '../state/rootState';
 const initialState: ChatState = {
   // roomId: '',
   messages: [],
+  messagesLog: [],
 };
 
 export const chatSlice = createSlice({
@@ -13,22 +14,29 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     chatAlert: (state, action: PayloadAction<Message>) => {
-      // state.roomId = action.payload.roomId;
-      state.messages.push(action.payload);
+      state.messagesLog.push(action.payload);
     },
+
     leaveChatAlert: state => {
-      // state.roomId = '';
       state.messages = [];
+      state.messagesLog = [];
     },
 
     addMessage: (state, action: PayloadAction<Message>) => {
       state.messages.push(action.payload);
     },
+
+    addMessageLog: (state, action: PayloadAction<Message>) => {
+      state.messagesLog.push(action.payload);
+    },
   },
 });
 
-export const { chatAlert, leaveChatAlert, addMessage } = chatSlice.actions;
+export const { chatAlert, leaveChatAlert, addMessage, addMessageLog } =
+  chatSlice.actions;
 
-export const getAllMessages = (state: RootState) => state.chat.messages;
+export const getMessages = (state: RootState) => state.chat.messages;
+
+export const getMessagesLog = (state: RootState) => state.chat.messagesLog;
 
 export default chatSlice.reducer;

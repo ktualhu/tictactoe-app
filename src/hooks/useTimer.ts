@@ -2,14 +2,18 @@ import { useEffect, useState } from 'react';
 
 const useTimer = (time: number, onTimesOut: () => void) => {
   const [timer, setTimer] = useState(time);
+  let t: any = null;
 
   useEffect(() => {
     time !== -1 && handleTimer();
+    return () => {
+      clearTimeout(t);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer]);
 
   const handleTimer = () => {
-    setTimeout(() => {
+    t = setTimeout(() => {
       timer > 0 ? setTimer(timer - 1) : onTimesOut();
     }, 1000);
   };

@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import io, { Socket } from 'socket.io-client';
-import { chatAlert, leaveChatAlert, addMessage } from '../store/chat/chatSlice';
+import {
+  chatAlert,
+  leaveChatAlert,
+  addMessage,
+  addMessageLog,
+} from '../store/chat/chatSlice';
 import { constructChatMessage } from '../utils/helpers/constructChatMessage';
 import { Message, MessageType } from '../utils/types/chat-message';
 
@@ -26,6 +31,10 @@ export const useChat = () => {
       dispatch(addMessage(data));
     });
 
+    chatSocketRef.current.on('chat:message_log', (data: Message) => {
+      dispatch(addMessageLog(data));
+    });
+
     return () => {
       chatSocketRef.current.disconnect();
     };
@@ -46,5 +55,9 @@ export const useChat = () => {
     chatSocketRef.current.emit('chat:message', { roomId, message });
   };
 
-  return { showChatJoinAlert, showChatLeaveAlert, sendMessage };
+  const sendMessageLog = (roomId: string, message: Message) => {
+    chatSocketRef.current.emit('chat:message_log', { roomId, message });
+  };
+
+  return { showChatJoinAlert, showChatLeaveAlert, sendMessage, sendMessageLog };
 };

@@ -37,7 +37,7 @@ function MessageComponent(props: MessageProps) {
       return (
         <React.Fragment>
           <span className="font-weight-bold">{props.message.author}</span>{' '}
-          {props.message.type === MessageType.JOIN ? 'join' : 'leave'} the room.
+          {props.message.text}
         </React.Fragment>
       );
     }
